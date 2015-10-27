@@ -1,5 +1,12 @@
 {
     "require": {
-        "slim/slim": "^3.0@RC"
+        "slim/slim": "^3.0@RC",
+        "illuminate/database": "5.1.*",
+        "robmorgan/phinx": "0.4.*"
+    },
+  "autoload": {
+    "psr-4": {
+      "Sprintboard\\": "src"
     }
+  }
 }

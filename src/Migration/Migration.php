@@ -1,6 +1,6 @@
 <?php
 
-namespace MyProject\Migration;
+namespace Sprintboard\Migration;
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Phinx\Migration\AbstractMigration;

@@ -26,7 +26,7 @@ $container = $app->getContainer();
 $container['generateHash'] = function (){
     $factory = new RandomLib\Factory;
     $generator = $factory->getMediumStrengthGenerator();
-    return $generator->generateString(8, 'abcdefghijklmnopqrstuvwxyz');
+    return $generator->generateString(8, $generator::CHAR_LOWER);
 };
 
 $container['view'] = function ($c) {

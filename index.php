@@ -39,13 +39,24 @@ $container['view'] = function ($c) {
 };
 
 $app->map(['GET', 'POST'], '/add-board', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-    $this->view->render($res, 'add-board.twig');
+    $this->view->render($res, 'boardAdd.twig');
     if ($req->isPost()){
         $board = new \Sprintboard\Model\Board();
         $board->name = $req->getParam('name');
         $board->hash = $this->generateHash;
         $board->save();
+        return $res->withRedirect($this->router->pathFor('boardView', ['boardHash' => $board->hash]));
     }
 });
+
+$app->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    try {
+        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+        $this->view->offsetSet('board', $board);
+        $this->view->render($res, 'boardView.twig');
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return $this->notFoundHandler($req, $res);
+    }
+})->setName('boardView');
 
 $app->run();

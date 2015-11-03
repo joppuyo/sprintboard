@@ -1,4 +1,18 @@
-{% extends 'html.twig' %}
-{% block body %}
-    <h1>{{ board.name }}</h1>
-{% endblock %}
+<html>
+<head>
+    <base href="{{ base_url() }}/">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        var API_ROOT = '{{ base_url() }}/api/';
+        var BOARD_HASH = 'zyhpnbzc';
+    </script>
+</head>
+{% verbatim %}
+<body ng-app="sprintBoard">
+<div ng-controller="boardController">
+    <div ng-repeat="card in cards"><h1>{{ card.name }}</h1></div>
+</div>
+</body>
+</html>
+{% endverbatim %}

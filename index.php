@@ -71,8 +71,8 @@ $app->group('/api', function(){
     });
     // Get information about board
     $this->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->get();
-        $board->load('cards');
+        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+        $board->load('cards.items');
         return $res->withJson($board);
     });
     // Add new card to a board
@@ -81,7 +81,7 @@ $app->group('/api', function(){
         $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->first();
         $card = new \Sprintboard\Model\Card();
         $body = $req->getParsedBody();
-        $name = $body['name'];
+        $name = empty($body['name']) ? null : $body['name'];
         if (!$name) {
             return $res->withJson(['error' => 'Missing name parameter'], 400);
         }
@@ -103,6 +103,25 @@ $app->group('/api', function(){
             return $res->withStatus(204);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $res->withJson(['error' => 'Card not found'], 400);
+        }
+    });
+    // Add new item to a card
+    // Example of JSON payload: {"name": "My Example Item"}
+    $this->post('/board/{boardHash}/card/{cardId}/item', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        $body = $req->getParsedBody();
+        $name = empty($body['name']) ? null : $body['name'];
+        if(!$name) {
+            return $res->withJson(['error' => 'Missing name parameter']);
+        }
+        try {
+            $card = \Sprintboard\Model\Card::findOrFail($args['cardId']);
+            $item = new \Sprintboard\Model\Item();
+            $item->name = $name;
+            $item->is_done = false;
+            $card->items()->save($item);
+            return $res->withStatus(201);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Card not found']);
         }
     });
 });

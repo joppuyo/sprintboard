@@ -3,7 +3,13 @@ require 'vendor/autoload.php';
 
 session_start();
 
-$app = new Slim\App();
+$configuration = [
+  'settings' => [
+    'displayErrorDetails' => true,
+  ],
+];
+$container = new \Slim\Container($configuration);
+$app = new \Slim\App($container);
 
 require 'config.php';
 
@@ -39,7 +45,6 @@ $container['view'] = function ($c) {
 };
 
 $app->map(['GET', 'POST'], '/add-board', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-    $this->view->render($res, 'boardAdd.twig');
     if ($req->isPost()){
         $board = new \Sprintboard\Model\Board();
         $board->name = $req->getParam('name');
@@ -47,6 +52,7 @@ $app->map(['GET', 'POST'], '/add-board', function(\Slim\Http\Request $req, \Slim
         $board->save();
         return $res->withRedirect($this->router->pathFor('boardView', ['boardHash' => $board->hash]));
     }
+    return $this->view->render($res, 'boardAdd.twig');
 });
 
 $app->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
@@ -58,5 +64,47 @@ $app->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Res
         return $this->notFoundHandler($req, $res);
     }
 })->setName('boardView');
+
+$app->group('/api', function(){
+    $this->get('/', function(){
+       echo 'API running';
+    });
+    // Get information about board
+    $this->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->get();
+        $board->load('cards');
+        return $res->withJson($board);
+    });
+    // Add new card to a board
+    // Example of JSON payload: {"name": "My Example Card"}
+    $this->post('/board/{boardHash}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->first();
+        $card = new \Sprintboard\Model\Card();
+        $body = $req->getParsedBody();
+        $name = $body['name'];
+        if (!$name) {
+            return $res->withJson(['error' => 'Missing name parameter'], 400);
+        }
+        $card->name = $name;
+        $board->cards()->save($card);
+        return $res->withStatus(201);
+    });
+    // Get all cards related to a board
+    $this->get('/board/{boardHash}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+        $board->load('cards');
+        return $res->withJson($board->cards);
+    });
+    // Delete a card from a board
+    $this->delete('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        try {
+            $card = \Sprintboard\Model\Card::where('id', $args['cardId'])->firstOrFail();
+            $card->delete();
+            return $res->withStatus(204);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Card not found'], 400);
+        }
+    });
+});
 
 $app->run();

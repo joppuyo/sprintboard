@@ -1,0 +1,18 @@
+// Project colors
+
+$color-red: #ee2d29;
+$color-background: #ecf0f1;
+
+// Bootstrap overrides
+$font-size-base: 16px;
+$body-bg: $color-background;
+
+
+@import "bootstrap";
+
+.header {
+  background-color: $color-red;
+  line-height: 48px;
+  color: white;
+  height: 48px;
+}

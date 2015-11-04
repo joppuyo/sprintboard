@@ -5,8 +5,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Card extends Model
 {
-    public function items()
+    public function tasks()
     {
-        return $this->hasMany('Sprintboard\Model\Item');
+        return $this->hasMany('Sprintboard\Model\Task');
     }
 }

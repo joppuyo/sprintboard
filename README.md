@@ -19,3 +19,9 @@ your database credentials in it. After that, run the following command to instal
 migrations.
 
 `composer install && vendor/bin/phinx migrate -c config-phinx.php && npm install && gulp sass`
+
+## License
+
+This work is licensed under the terms of the StopNerds Public License  
+version 1.1, as published by the StopNerds Foundation.  
+See http://stopnerds.github.io/license/ for more information.

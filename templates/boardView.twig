@@ -21,7 +21,12 @@
         </div>
     </div>
     <div class="content">
-        <div class="card" ng-repeat="card in board.cards"><h1>{{ card.name }}</h1></div>
+        <div class="card" ng-repeat="card in board.cards">
+        <div class="card-title">{{ card.name }}</div>
+        <div class="card-tasks-container" ng-repeat="task in card.tasks">
+            <div class="card-task"><div class="card-task-checkmark"></div><div class="card-task-name">{{ task.name }}</div></div>
+        </div>
+        </div>
     </div>
 </div>
 </body>

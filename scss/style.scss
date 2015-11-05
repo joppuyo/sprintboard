@@ -2,11 +2,16 @@
 
 $color-red: #ee2d29;
 $color-background: #ecf0f1;
+$color-card-border: rgba(0, 0, 0, 0.15);
 
 // Bootstrap overrides
 $font-size-base: 16px;
 $body-bg: $color-background;
 
+@mixin icon(){
+  background-position: center;
+  background-repeat: no-repeat;
+}
 
 @import "bootstrap";
 
@@ -32,8 +37,7 @@ $body-bg: $color-background;
   width: 40px;
   float: left;
   background-image: url("../images/icon-add.svg");
-  background-position: center;
-  background-repeat: no-repeat;
+  @include icon;
 }
 
 .header-card-add-text {
@@ -47,6 +51,32 @@ $body-bg: $color-background;
 .card {
   background-color: white;
   width: 400px;
-  float: left;
+  display: inline-block;
+  vertical-align: top;
   margin: 8px;
+}
+
+.card-task {
+  min-height: 48px;
+  border-top: 1px solid $color-card-border;
+}
+
+.card-title {
+  font-size: 20px;
+  font-weight: 500;
+  padding: 14px;
+}
+
+.card-task-name {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  overflow: hidden;
+}
+
+.card-task-checkmark {
+  width: 48px;
+  height: 48px;
+  background-image: url("../images/icon-checkmark.svg");
+  @include icon;
+  float: left;
 }

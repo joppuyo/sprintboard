@@ -8,7 +8,7 @@ app.controller('boardController', function($scope, $http, $uibModal) {
     });
     $scope.addCard = function(){
         var modal = $uibModal.open({
-            templateUrl: 'js/templates/ModalAddCard.html',
+            templateUrl: 'js/templates/modal-add-card.html',
             controller: 'ModalAddCardController'
         });
     };

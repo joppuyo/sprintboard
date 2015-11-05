@@ -15,4 +15,38 @@ $body-bg: $color-background;
   line-height: 48px;
   color: white;
   height: 48px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.header-board-name {
+  float: left;
+}
+
+.header-card-add {
+  float: right;
+}
+
+.header-card-add-icon {
+  height: 48px;
+  width: 40px;
+  float: left;
+  background-image: url("../images/icon-add.svg");
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.header-card-add-text {
+  float: left;
+}
+
+.content {
+  padding: 8px;
+}
+
+.card {
+  background-color: white;
+  width: 400px;
+  float: left;
+  margin: 8px;
 }

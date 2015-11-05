@@ -15,6 +15,11 @@ $body-bg: $color-background;
 
 @import "bootstrap";
 
+.form-no-margin {
+  margin: 0;
+}
+
+
 .header {
   background-color: $color-red;
   line-height: 48px;

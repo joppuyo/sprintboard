@@ -126,4 +126,12 @@ $app->group('/api', function(){
     });
 });
 
+$app->get('/browserconfig.xml', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+   return $this->view->render($res, 'browserconfig.twig');
+});
+
+$app->get('/manifest.json', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    return $this->view->render($res, 'manifest.twig');
+});
+
 $app->run();

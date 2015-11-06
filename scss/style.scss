@@ -9,6 +9,10 @@ $color-gray: #a6a6a6;
 $font-size-base: 16px;
 $body-bg: $color-background;
 
+@mixin no-select(){
+  user-select: none;
+}
+
 @mixin icon(){
   background-position: center;
   background-repeat: no-repeat;
@@ -20,14 +24,12 @@ $body-bg: $color-background;
   margin: 0;
 }
 
-
 .header {
   background-color: $color-red;
   line-height: 48px;
   color: white;
   height: 48px;
   padding-left: 16px;
-  padding-right: 16px;
 }
 
 .header-board-name {
@@ -37,6 +39,11 @@ $body-bg: $color-background;
 .header-card-add {
   float: right;
   cursor: pointer;
+  @include no-select;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+  padding-right: 16px;
 }
 
 .header-card-add-icon {
@@ -85,6 +92,7 @@ $body-bg: $color-background;
   height: 48px;
   background-image: url("../images/icon-checkmark.svg");
   @include icon;
+  @include no-select;
   float: left;
 }
 
@@ -108,6 +116,10 @@ $body-bg: $color-background;
   height: 48px;
   background-image: url("../images/icon-ellipsis.svg");
   @include icon;
+  @include no-select;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
 }
 
 .card-task-name-add-new {
@@ -115,5 +127,9 @@ $body-bg: $color-background;
 }
 
 .card-task-add-new {
+  @include no-select;
   cursor: pointer;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
 }

@@ -1,11 +1,21 @@
 var app = angular.module('sprintBoard', ['ui.bootstrap']);
 
 app.controller('boardController', function($scope, $http, $uibModal) {
-    var promise = $http.get(API_ROOT + 'board/' + BOARD_HASH);
-    promise.then(function(data){
-        $scope.board = data.data;
-        console.log(data.data.cards);
+
+    $scope.updateBoard = function(){
+        var promise = $http.get(API_ROOT + 'board/' + BOARD_HASH);
+        promise.then(function(data){
+            $scope.board = data.data;
+            console.log(data.data.cards);
+        });
+    };
+
+    $scope.updateBoard();
+
+    $scope.$on('boardUpdateEvent', function() {
+        $scope.updateBoard();
     });
+
     $scope.addCard = function(){
         var modal = $uibModal.open({
             templateUrl: 'js/templates/modal-add-card.html',
@@ -14,7 +24,7 @@ app.controller('boardController', function($scope, $http, $uibModal) {
     };
 });
 
-app.controller('ModalAddCardController', function($scope, $uibModalInstance, $http){
+app.controller('ModalAddCardController', function($scope, $uibModalInstance, $http, $rootScope){
     $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');
     };
@@ -23,8 +33,8 @@ app.controller('ModalAddCardController', function($scope, $uibModalInstance, $ht
         body.name = $scope.card.name;
         var promise = $http.post(API_ROOT + 'board/' + BOARD_HASH + '/card', body);
         promise.then(function(){
-            $uibModalInstance.dismiss('cancel');
-            // TODO: refresh views
+            $uibModalInstance.dismiss();
+            $rootScope.$broadcast('boardUpdateEvent');
         })
     }
 });

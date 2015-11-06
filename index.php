@@ -124,6 +124,21 @@ $app->group('/api', function(){
             return $res->withJson(['error' => 'Card not found']);
         }
     });
+    // Mark a task to be done or unmark it
+    $this->map(['PUT', 'DELETE'], '/board/{boardHash}/card/{cardId}/task/{taskId}/done', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        try {
+            $task = \Sprintboard\Model\Task::findOrFail($args['taskId']);
+            if ($req->isPut()) {
+                $task->is_done = true;
+            } else if ($req->isDelete()) {
+                $task->is_done = false;
+            }
+            $task->save();
+            return $res->withStatus(201);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Task not found']);
+        }
+    });
 });
 
 $app->get('/browserconfig.xml', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){

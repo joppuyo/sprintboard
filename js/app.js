@@ -49,6 +49,20 @@ app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
     }
 });
 
+app.controller('taskController', function($scope, $http, $rootScope, $uibModal){
+    $scope.markAsDone = function() {
+        var promise;
+        if ($scope.task.is_done) {
+            promise = $http.delete(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task/' + $scope.task.id + '/done');
+        } else {
+            promise = $http.put(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task/' + $scope.task.id + '/done');
+        }
+        promise.then(function(){
+            $rootScope.$broadcast('boardUpdateEvent');
+        });
+    }
+});
+
 app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $http, $rootScope){
     $scope.cancel = function() {
         $uibModalInstance.dismiss('cancel');

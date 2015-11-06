@@ -94,6 +94,11 @@ $body-bg: $color-background;
   @include icon;
   @include no-select;
   float: left;
+  cursor: pointer;
+}
+
+.card-task-checkmark-is-done {
+  background-image: url("../images/icon-checkmark-is-done.svg");
 }
 
 .card-task-add {

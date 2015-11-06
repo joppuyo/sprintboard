@@ -26,9 +26,9 @@
     <div class="content">
         <div class="card" ng-repeat="card in board.cards" ng-controller="cardController">
         <div class="card-title">{{ card.name }}</div>
-        <div class="card-tasks-container" ng-repeat="task in card.tasks">
+        <div class="card-tasks-container" ng-repeat="task in card.tasks" ng-controller="taskController">
             <div class="card-task">
-                <div class="card-task-checkmark"></div>
+                <div class="card-task-checkmark" ng-class="{'card-task-checkmark-is-done': task.is_done}" ng-click="markAsDone()"></div>
                 <div class="card-task-ellipsis-wrapper" uib-dropdown on-toggle="toggled(open)">
                 <div class="card-task-ellipsis" uib-dropdown-toggle></div>
                 <ul class="uib-dropdown-menu" aria-labelledby="simple-dropdown">

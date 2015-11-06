@@ -38,3 +38,28 @@ app.controller('ModalAddCardController', function($scope, $uibModalInstance, $ht
         })
     }
 });
+
+app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
+    $scope.addTask = function() {
+        var modal = $uibModal.open({
+            templateUrl: 'js/templates/modal-add-task.html',
+            controller: 'ModalAddTaskController',
+            scope: $scope
+        });
+    }
+});
+
+app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $http, $rootScope){
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+    $scope.submit = function() {
+        var body = {};
+        body.name = $scope.task.name;
+        var promise = $http.post(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task', body);
+        promise.then(function(){
+            $uibModalInstance.dismiss();
+            $rootScope.$broadcast('boardUpdateEvent');
+        })
+    }
+});

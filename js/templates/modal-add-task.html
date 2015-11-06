@@ -1,0 +1,15 @@
+<form ng-submit="submit()" class="form-no-margin">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+    <h3 class="modal-title">Add a new task to {{ card.name }}</h3>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label for="task-name">Task name</label>
+        <input type="text" class="form-control" id="task-name" placeholder="Enter task name" ng-model="task.name" autofocus>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="submit">Add task</button>
+</div>
+</form>

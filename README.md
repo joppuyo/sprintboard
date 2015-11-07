@@ -18,7 +18,7 @@ Create a new MySQL database named `sprintboard`. Duplicate `config.sample.php` t
 your database credentials in it. After that, run the following command to install all the dependencies and run the
 migrations.
 
-`composer install && vendor/bin/phinx migrate -c config-phinx.php && npm install && gulp sass`
+    composer install && vendor/bin/phinx migrate -c config-phinx.php && npm install && gulp sass
 
 ## License
 

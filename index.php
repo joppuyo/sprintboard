@@ -152,6 +152,15 @@ $app->group('/api', function(){
             return $res->withJson(['error' => 'Task not found'], 404);
         }
     });
+    $this->delete('/board/{boardHash}/card/{cardId}/task/{taskId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        try {
+            $task = \Sprintboard\Model\Task::findOrFail($args['taskId']);
+            $task->delete();
+            return $res->withStatus(204);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Task not found'], 404);
+        }
+    });
 });
 
 $app->get('/browserconfig.xml', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){

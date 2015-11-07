@@ -61,6 +61,12 @@ app.controller('taskController', function($scope, $http, $rootScope, $uibModal){
             $rootScope.$broadcast('boardUpdateEvent');
         });
     };
+    $scope.deleteTask = function () {
+        var promise = $http.delete(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task/' + $scope.task.id);
+        promise.then(function(){
+            $rootScope.$broadcast('boardUpdateEvent');
+        })
+    }
 });
 
 app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $http, $rootScope){

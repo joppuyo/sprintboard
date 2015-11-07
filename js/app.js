@@ -35,8 +35,8 @@ app.controller('ModalAddCardController', function($scope, $uibModalInstance, $ht
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
-        })
-    }
+        });
+    };
 });
 
 app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
@@ -46,7 +46,7 @@ app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
             controller: 'ModalAddTaskController',
             scope: $scope
         });
-    }
+    };
 });
 
 app.controller('taskController', function($scope, $http, $rootScope, $uibModal){
@@ -60,7 +60,7 @@ app.controller('taskController', function($scope, $http, $rootScope, $uibModal){
         promise.then(function(){
             $rootScope.$broadcast('boardUpdateEvent');
         });
-    }
+    };
 });
 
 app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $http, $rootScope){
@@ -74,6 +74,6 @@ app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $ht
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
-        })
-    }
+        });
+    };
 });

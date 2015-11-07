@@ -45,7 +45,7 @@ $container['view'] = function ($c) {
 };
 
 $app->map(['GET', 'POST'], '/add-board', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-    if ($req->isPost()){
+    if ($req->isPost()) {
         $board = new \Sprintboard\Model\Board();
         $board->name = $req->getParam('name');
         $board->hash = $this->generateHash;
@@ -71,29 +71,42 @@ $app->group('/api', function(){
     });
     // Get information about board
     $this->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
-        $board->load('cards.tasks');
-        return $res->withJson($board);
+        try {
+            $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+            $board->load('cards.tasks');
+            return $res->withJson($board);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Board not found'], 404);
+        }
     });
     // Add new card to a board
     // Example of JSON payload: {"name": "My Example Card"}
     $this->post('/board/{boardHash}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->first();
-        $card = new \Sprintboard\Model\Card();
-        $body = $req->getParsedBody();
-        $name = empty($body['name']) ? null : $body['name'];
-        if (!$name) {
-            return $res->withJson(['error' => 'Missing name parameter'], 400);
+        try {
+            $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+            $card = new \Sprintboard\Model\Card();
+            $body = $req->getParsedBody();
+            $name = empty($body['name']) ? null : $body['name'];
+            if (!$name) {
+                return $res->withJson(['error' => 'Missing name parameter'], 400);
+            }
+            $card->name = $name;
+            $board->cards()->save($card);
+            return $res->withStatus(201);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Card not found'], 404);
         }
-        $card->name = $name;
-        $board->cards()->save($card);
-        return $res->withStatus(201);
+
     });
     // Get all cards related to a board
     $this->get('/board/{boardHash}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
-        $board->load('cards');
-        return $res->withJson($board->cards);
+        try {
+            $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+            $board->load('cards');
+            return $res->withJson($board->cards);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Card not found'], 404);
+        }
     });
     // Delete a card from a board
     $this->delete('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
@@ -102,7 +115,7 @@ $app->group('/api', function(){
             $card->delete();
             return $res->withStatus(204);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return $res->withJson(['error' => 'Card not found'], 400);
+            return $res->withJson(['error' => 'Card not found'], 404);
         }
     });
     // Add new task to a card
@@ -110,8 +123,8 @@ $app->group('/api', function(){
     $this->post('/board/{boardHash}/card/{cardId}/task', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         $body = $req->getParsedBody();
         $name = empty($body['name']) ? null : $body['name'];
-        if(!$name) {
-            return $res->withJson(['error' => 'Missing name parameter']);
+        if (!$name) {
+            return $res->withJson(['error' => 'Missing name parameter'], 400);
         }
         try {
             $card = \Sprintboard\Model\Card::findOrFail($args['cardId']);
@@ -121,7 +134,7 @@ $app->group('/api', function(){
             $card->tasks()->save($task);
             return $res->withStatus(201);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return $res->withJson(['error' => 'Card not found']);
+            return $res->withJson(['error' => 'Card not found'], 404);
         }
     });
     // Mark a task to be done or unmark it
@@ -136,7 +149,7 @@ $app->group('/api', function(){
             $task->save();
             return $res->withStatus(201);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return $res->withJson(['error' => 'Task not found']);
+            return $res->withJson(['error' => 'Task not found'], 404);
         }
     });
 });

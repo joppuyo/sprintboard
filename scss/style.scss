@@ -18,6 +18,13 @@ $body-bg: $color-background;
   background-repeat: no-repeat;
 }
 
+.util-truncate {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 @import "bootstrap";
 
 .form-no-margin {
@@ -137,4 +144,8 @@ $body-bg: $color-background;
   &:hover {
     background-color: rgba(0, 0, 0, 0.03);
   }
+}
+
+.modal-title-wrapper {
+  padding-right: 25px;
 }

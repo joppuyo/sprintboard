@@ -1,7 +1,9 @@
 <form ng-submit="submit()" class="form-no-margin">
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
-    <h3 class="modal-title">Rename task {{ task.name }}</h3>
+    <div class="modal-title-wrapper">
+        <h3 class="modal-title util-truncate">Rename task {{ task.name }}</h3>
+    </div>
 </div>
 <div class="modal-body">
     <div class="form-group">

@@ -78,7 +78,6 @@ $app->group('/api', function(){
               }
             ])->where('hash', $args['boardHash'])
               ->firstOrFail();
-            //$board->load('cards.tasks');
             return $res->withJson($board);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $res->withJson(['error' => 'Board not found'], 404);

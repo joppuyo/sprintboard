@@ -8,6 +8,7 @@ $color-gray: #a6a6a6;
 // Bootstrap overrides
 $font-size-base: 16px;
 $body-bg: $color-background;
+$brand-primary: $color-red;
 
 @mixin no-select(){
   user-select: none;
@@ -174,5 +175,16 @@ $body-bg: $color-background;
   @include no-select;
   &:hover {
     background-color: rgba(0, 0, 0, 0.03);
+  }
+}
+
+.add-board-card {
+  background-color: white;
+  padding: 10px;
+  margin-top: 20px;
+  h1 {
+    margin-top: 0;
+    font-size: 20px;
+    font-weight: 500;
   }
 }

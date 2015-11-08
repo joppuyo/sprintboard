@@ -1,21 +1,5 @@
-<html>
-<head>
-    <base href="{{ base_url() }}/">
-    <title>{{ board.name }} - Sprintboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="node_modules/angular/angular.js"></script>
-    <script src="node_modules/angular-ui-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="node_modules/underscore/underscore.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/vendor/sortable.js"></script>
-    <script src="js/vendor/ng-sortable.js"></script>
-    <script>
-        var API_ROOT = '{{ base_url() }}/api/';
-        var BOARD_HASH = '{{ board.hash }}';
-    </script>
-    {% include 'favicons.twig' %}
-</head>
+{% extends 'html.twig' %}
+{% block body %}
 {% verbatim %}
 <body ng-app="sprintBoard">
 <div ng-controller="boardController">
@@ -63,3 +47,4 @@
 </body>
 </html>
 {% endverbatim %}
+{% endblock %}

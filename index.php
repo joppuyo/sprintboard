@@ -44,7 +44,7 @@ $container['view'] = function ($c) {
     return $view;
 };
 
-$app->map(['GET', 'POST'], '/add-board', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+$app->map(['GET', 'POST'], '/', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
     if ($req->isPost()) {
         $board = new \Sprintboard\Model\Board();
         $board->name = $req->getParam('name');

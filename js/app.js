@@ -66,6 +66,13 @@ app.controller('taskController', function($scope, $http, $rootScope, $uibModal){
         promise.then(function(){
             $rootScope.$broadcast('boardUpdateEvent');
         })
+    };
+    $scope.renameTask = function () {
+        var modal = $uibModal.open({
+            templateUrl: 'js/templates/modal-rename-task.html',
+            controller: 'ModalRenameTaskController',
+            scope: $scope
+        });
     }
 });
 
@@ -82,4 +89,19 @@ app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $ht
             $rootScope.$broadcast('boardUpdateEvent');
         });
     };
+});
+
+app.controller('ModalRenameTaskController', function ($scope, $uibModalInstance, $http, $rootScope) {
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+    $scope.submit = function() {
+        var body = {};
+        body.name = $scope.task.newName;
+        var promise = $http.put(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task/' + $scope.task.id, body);
+        promise.then(function(){
+            $uibModalInstance.dismiss();
+            $rootScope.$broadcast('boardUpdateEvent');
+        });
+    }
 });

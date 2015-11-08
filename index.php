@@ -152,6 +152,7 @@ $app->group('/api', function(){
             return $res->withJson(['error' => 'Task not found'], 404);
         }
     });
+    // Delete a task
     $this->delete('/board/{boardHash}/card/{cardId}/task/{taskId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
             $task = \Sprintboard\Model\Task::findOrFail($args['taskId']);
@@ -160,6 +161,22 @@ $app->group('/api', function(){
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $res->withJson(['error' => 'Task not found'], 404);
         }
+    });
+    // Rename a task
+    $this->put('/board/{boardHash}/card/{cardId}/task/{taskId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+        $body = $req->getParsedBody();
+        $name = empty($body['name']) ? null : $body['name'];
+        if (!$name) {
+            return $res->withJson(['error' => 'Missing name parameter'], 400);
+        }
+        try {
+            $task = \Sprintboard\Model\Task::findOrFail($args['taskId']);
+            $task->name = $name;
+            $task->save();
+            return $res->withStatus(204);
+       } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Task not found'], 404);
+       }
     });
 });
 

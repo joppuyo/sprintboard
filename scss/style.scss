@@ -104,8 +104,13 @@ $body-bg: $color-background;
   cursor: pointer;
 }
 
-.card-task-checkmark-is-done {
-  background-image: url("../images/icon-checkmark-is-done.svg");
+.card-task-is-done {
+  .card-task-checkmark {
+    background-image: url("../images/icon-checkmark-is-done.svg");
+  }
+  .card-task-name {
+    color: $color-gray;
+  }
 }
 
 .card-task-add {

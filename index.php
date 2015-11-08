@@ -72,8 +72,13 @@ $app->group('/api', function(){
     // Get information about board
     $this->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
-            $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
-            $board->load('cards.tasks');
+            $board = \Sprintboard\Model\Board::with([
+              'cards.tasks' => function($query){
+                  return $query->orderBy('index');
+              }
+            ])->where('hash', $args['boardHash'])
+              ->firstOrFail();
+            //$board->load('cards.tasks');
             return $res->withJson($board);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $res->withJson(['error' => 'Board not found'], 404);
@@ -98,16 +103,6 @@ $app->group('/api', function(){
         }
 
     });
-    // Get all cards related to a board
-    $this->get('/board/{boardHash}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
-        try {
-            $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
-            $board->load('cards');
-            return $res->withJson($board->cards);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return $res->withJson(['error' => 'Card not found'], 404);
-        }
-    });
     // Delete a card from a board
     $this->delete('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
@@ -131,6 +126,10 @@ $app->group('/api', function(){
             $task = new \Sprintboard\Model\Task();
             $task->name = $name;
             $task->is_done = false;
+            $maxIndex = $card->tasks()->max('index');
+            if (!is_null($maxIndex)) {
+                $task->index = $maxIndex + 1;
+            }
             $card->tasks()->save($task);
             return $res->withStatus(201);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -177,6 +176,19 @@ $app->group('/api', function(){
        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $res->withJson(['error' => 'Task not found'], 404);
        }
+    });
+    $this->put('/board/{boardHash}/card/{cardId}/sort', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+        $body = $req->getParsedBody();
+        try {
+            foreach ($body as $index => $taskId) {
+                $task = \Sprintboard\Model\Task::findOrFail($taskId);
+                $task->index = $index;
+                $task->save();
+            }
+            return $res->withStatus(204);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Task not found'], 404);
+        }
     });
 });
 

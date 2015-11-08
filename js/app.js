@@ -1,4 +1,4 @@
-var app = angular.module('sprintBoard', ['ui.bootstrap']);
+var app = angular.module('sprintBoard', ['ui.bootstrap', 'ng-sortable']);
 
 app.controller('boardController', function($scope, $http, $uibModal) {
 
@@ -47,6 +47,15 @@ app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
             scope: $scope
         });
     };
+    $scope.sortConfig = {
+        animation: 200,
+        onSort: function (event) {
+            var taskIds = _.map(event.models, function(task){
+                return task.id;
+            });
+            var promise = $http.put(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/sort', taskIds);
+        }
+    }
 });
 
 app.controller('taskController', function($scope, $http, $rootScope, $uibModal){

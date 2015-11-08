@@ -75,6 +75,7 @@ $body-bg: $color-background;
   display: inline-block;
   vertical-align: top;
   margin: 8px;
+  position: relative;
 }
 
 .card-task {
@@ -86,6 +87,7 @@ $body-bg: $color-background;
   font-size: 20px;
   font-weight: 500;
   padding: 14px;
+  margin-right: 48px;
 }
 
 .card-task-name {
@@ -153,4 +155,24 @@ $body-bg: $color-background;
 
 .modal-title-wrapper {
   padding-right: 25px;
+}
+
+.card-ellipsis-wrapper {
+  width: 48px;
+  height: 48px;
+  position: absolute;
+  top: 4px;
+  right: 0;
+  cursor: pointer;
+}
+
+.card-ellipsis {
+  width: 48px;
+  height: 48px;
+  background-image: url("../images/icon-ellipsis.svg");
+  @include icon;
+  @include no-select;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+  }
 }

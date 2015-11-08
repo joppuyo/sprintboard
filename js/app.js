@@ -47,6 +47,13 @@ app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
             scope: $scope
         });
     };
+    $scope.deleteCard = function() {
+        var modal = $uibModal.open({
+            templateUrl: 'js/templates/modal-delete-card.html',
+            controller: 'ModalDeleteCardController',
+            scope: $scope
+        });
+    };
     $scope.sortConfig = {
         animation: 200,
         onSort: function (event) {
@@ -108,6 +115,19 @@ app.controller('ModalRenameTaskController', function ($scope, $uibModalInstance,
         var body = {};
         body.name = $scope.task.newName;
         var promise = $http.put(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task/' + $scope.task.id, body);
+        promise.then(function(){
+            $uibModalInstance.dismiss();
+            $rootScope.$broadcast('boardUpdateEvent');
+        });
+    }
+});
+
+app.controller('ModalDeleteCardController', function ($scope, $uibModalInstance, $http, $rootScope) {
+    $scope.cancel = function() {
+        $uibModalInstance.dismiss('cancel');
+    };
+    $scope.deleteCard = function() {
+        var promise = $http.delete(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id);
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');

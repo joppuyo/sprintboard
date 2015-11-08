@@ -1,5 +1,5 @@
 .idea
-vendor
+/vendor
 config.php
 node_modules
 css/

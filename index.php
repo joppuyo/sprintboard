@@ -102,7 +102,7 @@ $app->group('/api', function(){
         }
 
     });
-    // Delete a card from a board
+    // Rename a card
     $this->put('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
             $body = $req->getParsedBody();

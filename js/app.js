@@ -6,7 +6,6 @@ app.controller('boardController', function($scope, $http, $uibModal) {
         var promise = $http.get(API_ROOT + 'board/' + BOARD_HASH);
         promise.then(function(data){
             $scope.board = data.data;
-            console.log(data.data.cards);
         });
     };
 

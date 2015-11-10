@@ -103,6 +103,21 @@ $app->group('/api', function(){
 
     });
     // Delete a card from a board
+    $this->put('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        try {
+            $body = $req->getParsedBody();
+            if (empty($body['name'])) {
+                return $res->withJson(['error' => 'Missing name parameter'], 400);
+            }
+            $card = \Sprintboard\Model\Card::where('id', $args['cardId'])->firstOrFail();
+            $card->name = $body['name'];
+            $card->save();
+            return $res->withStatus(204);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Card not found'], 404);
+        }
+    });
+    // Delete a card from a board
     $this->delete('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
             $card = \Sprintboard\Model\Card::where('id', $args['cardId'])->firstOrFail();

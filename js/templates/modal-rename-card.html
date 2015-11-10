@@ -1,0 +1,17 @@
+<form ng-submit="submit()" class="form-no-margin">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="cancel()"><span aria-hidden="true">&times;</span></button>
+    <div class="modal-title-wrapper">
+        <h3 class="modal-title util-truncate">Rename card {{ card.name }}</h3>
+    </div>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label for="card-name">Card name</label>
+        <input type="text" class="form-control" id="card-name" placeholder="Enter card name" ng-model="card.newName" ng-value="card.name" autofocus>
+    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="submit">Rename card</button>
+</div>
+</form>

@@ -46,7 +46,7 @@ $container['view'] = function ($c) {
 
 $app->map(['GET', 'POST'], '/', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
     if ($req->isPost()) {
-        $board = new \Sprintboard\Model\Board();
+        $board = new \Sprintboard\Model\Sprint();
         $board->name = $req->getParam('name');
         $board->hash = $this->generateHash;
         $board->save();
@@ -57,7 +57,7 @@ $app->map(['GET', 'POST'], '/', function(\Slim\Http\Request $req, \Slim\Http\Res
 
 $app->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
     try {
-        $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+        $board = \Sprintboard\Model\Sprint::where('hash', $args['boardHash'])->firstOrFail();
         $this->view->offsetSet('board', $board);
         $this->view->render($res, 'boardView.twig');
     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
@@ -72,7 +72,7 @@ $app->group('/api', function(){
     // Get information about board
     $this->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
-            $board = \Sprintboard\Model\Board::with([
+            $board = \Sprintboard\Model\Sprint::with([
               'cards.tasks' => function($query){
                   return $query->orderBy('index');
               }
@@ -87,7 +87,7 @@ $app->group('/api', function(){
     // Example of JSON payload: {"name": "My Example Card"}
     $this->post('/board/{boardHash}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
-            $board = \Sprintboard\Model\Board::where('hash', $args['boardHash'])->firstOrFail();
+            $board = \Sprintboard\Model\Sprint::where('hash', $args['boardHash'])->firstOrFail();
             $card = new \Sprintboard\Model\Card();
             $body = $req->getParsedBody();
             $name = empty($body['name']) ? null : $body['name'];

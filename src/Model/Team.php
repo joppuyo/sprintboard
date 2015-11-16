@@ -5,7 +5,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Team extends Model
 {
-    public function cards()
+    public function sprints()
     {
         return $this->hasMany('Sprintboard\Model\Sprint');
     }

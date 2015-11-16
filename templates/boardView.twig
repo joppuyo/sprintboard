@@ -4,14 +4,14 @@
 <body ng-app="sprintBoard">
 <div ng-controller="boardController">
     <div class="header">
-        <div class="header-board-name">{{board.name}}</div>
+        <div class="header-board-name">{{team.name}} - {{sprint.name}}</div>
         <div class="header-card-add" ng-click="addCard()">
             <div class="header-card-add-icon"></div>
             <div class="header-card-add-text">Add new card</div>
         </div>
     </div>
     <div class="content">
-        <div class="card" ng-repeat="card in board.cards" ng-controller="cardController">
+        <div class="card" ng-repeat="card in sprint.cards" ng-controller="cardController">
         <div class="card-title">{{ card.name }}</div>
 
         <div class="card-ellipsis-wrapper" uib-dropdown on-toggle="toggled(open)">

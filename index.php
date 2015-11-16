@@ -55,11 +55,25 @@ $app->map(['GET', 'POST'], '/', function(\Slim\Http\Request $req, \Slim\Http\Res
     return $this->view->render($res, 'boardAdd.twig');
 });
 
-$app->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+$app->get('/team/{teamHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
     try {
-        $board = \Sprintboard\Model\Sprint::where('hash', $args['boardHash'])->firstOrFail();
-        $this->view->offsetSet('board', $board);
-        $this->view->render($res, 'boardView.twig');
+        $team = \Sprintboard\Model\Team::where('hash', $args['teamHash'])->firstOrFail();
+        $date = new DateTime();
+        $this->view->offsetSet('team', $team);
+        $this->view->offsetSet('start_date', $date->format('d.m.Y'));
+        return $this->view->render($res, 'teamView.twig');
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        return $this->notFoundHandler($req, $res);
+    }
+})->setName('teamView');
+
+$app->get('/team/{teamHash}/{sprintId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    try {
+        $sprint = \Sprintboard\Model\Sprint::findOrFail($args['sprintId']);
+        $team = \Sprintboard\Model\Team::where('hash', $args['teamHash'])->firstOrFail();
+        $this->view->offsetSet('team', $team);
+        $this->view->offsetSet('sprint', $sprint);
+        return $this->view->render($res, 'boardView.twig');
     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
         return $this->notFoundHandler($req, $res);
     }
@@ -70,15 +84,37 @@ $app->group('/api', function(){
        echo 'API running';
     });
     // Get information about board
-    $this->get('/board/{boardHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    $this->get('/team/{teamHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
-            $board = \Sprintboard\Model\Sprint::with([
-              'cards.tasks' => function($query){
-                  return $query->orderBy('index');
-              }
-            ])->where('hash', $args['boardHash'])
+            $team = \Sprintboard\Model\Team::with([
+                'sprints' => function($query) {
+                    return $query->orderBy('start_datetime');
+                },
+                'sprints.cards',
+                'sprints.cards.tasks' => function($query) {
+                    return $query->orderBy('index');
+                }
+            ])->where('hash', $args['teamHash'])
               ->firstOrFail();
-            return $res->withJson($board);
+            return $res->withJson($team);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['error' => 'Board not found'], 404);
+        }
+    });
+    // Get information about sprint
+    $this->get('/team/{teamHash}/{sprintId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+        try {
+            $team = \Sprintboard\Model\Team::with([
+                'sprints' => function($query) {
+                    return $query->orderBy('start_datetime');
+                },
+                'sprints.cards',
+                'sprints.cards.tasks' => function($query) {
+                    return $query->orderBy('index');
+                }
+            ])->where('hash', $args['teamHash'])
+                ->firstOrFail();
+            return $res->withJson($team);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $res->withJson(['error' => 'Board not found'], 404);
         }

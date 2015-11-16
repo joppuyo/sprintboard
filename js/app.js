@@ -3,9 +3,11 @@ var app = angular.module('sprintBoard', ['ui.bootstrap', 'ng-sortable']);
 app.controller('boardController', function($scope, $http, $uibModal) {
 
     $scope.updateBoard = function(){
-        var promise = $http.get(API_ROOT + 'board/' + BOARD_HASH);
-        promise.then(function(data){
-            $scope.board = data.data;
+        var promise = $http.get(API_ROOT + 'team/' + TEAM_HASH);
+        promise.then(function(response){
+            $scope.team = response.data;
+            $scope.sprint = _.findWhere(response.data.sprints, { id: SPRINT_ID });
+            console.log($scope.board);
         });
     };
 

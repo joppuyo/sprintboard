@@ -1,5 +1,5 @@
-{% if board.name %}
-{% set title = board.name ~ ' - Sprintboard' %}
+{% if team.name %}
+{% set title = team.name ~ ' - Sprintboard' %}
 {% endif %}
 <!DOCTYPE html>
 <html lang="en">
@@ -16,7 +16,8 @@
     <script src="js/vendor/ng-sortable.js"></script>
     <script>
         var API_ROOT = '{{ base_url() }}/api/';
-        var BOARD_HASH = '{{ board.hash }}';
+        var TEAM_HASH = '{{ team.hash }}';
+        var SPRINT_ID = {{ sprint.id }};
     </script>
     {% include 'favicons.twig' %}
 </head>

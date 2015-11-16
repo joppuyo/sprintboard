@@ -18,8 +18,10 @@
             <div class="card-ellipsis" uib-dropdown-toggle></div>
             <ul class="uib-dropdown-menu pull-right">
                 <li>
-                  <a href="" ng-click="renameCard()">Rename card</a>
-                  <a href="" ng-click="deleteCard()">Delete card</a>
+                    <a href="" ng-click="renameCard()">Rename card</a>
+                </li>
+                <li>
+                    <a href="" ng-click="deleteCard()">Delete card</a>
                 </li>
             </ul>
         </div>
@@ -30,10 +32,12 @@
                 <div class="card-task-ellipsis-wrapper" uib-dropdown on-toggle="toggled(open)">
                 <div class="card-task-ellipsis" uib-dropdown-toggle></div>
                 <ul class="uib-dropdown-menu pull-right">
-                <li>
-                  <a href="" ng-click="renameTask()">Rename task</a>
-                  <a href="" ng-click="deleteTask()">Delete task</a>
-                </li>
+                    <li>
+                        <a href="" ng-click="renameTask()">Rename task</a>
+                    </li>
+                    <li>
+                        <a href="" ng-click="deleteTask()">Delete task</a>
+                    </li>
                 </ul>
                 </div>
             <div class="card-task-name">{{ task.name }}</div></div>

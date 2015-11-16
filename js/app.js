@@ -9,6 +9,9 @@ app.controller('boardController', function($scope, $http, $uibModal) {
             $scope.sprint = _.findWhere(response.data.sprints, { id: SPRINT_ID });
             console.log($scope.board);
         });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
+        });
     };
 
     $scope.updateBoard();
@@ -36,6 +39,9 @@ app.controller('ModalAddCardController', function($scope, $uibModalInstance, $ht
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
+        });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
         });
     };
 });
@@ -69,6 +75,9 @@ app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
                 return task.id;
             });
             var promise = $http.put(API_ROOT + 'card/' + $scope.card.id + '/sort', taskIds);
+            promise.catch(function(response){
+                alert('Error. Backend returned: ' + response.data.message );
+            });
         }
     };
 });
@@ -84,11 +93,20 @@ app.controller('taskController', function($scope, $http, $rootScope, $uibModal){
         promise.then(function(){
             $rootScope.$broadcast('boardUpdateEvent');
         });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
+        });
     };
     $scope.deleteTask = function () {
         var promise = $http.delete(API_ROOT + 'task/' + $scope.task.id);
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
+        });
         promise.then(function(){
             $rootScope.$broadcast('boardUpdateEvent');
+        });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
         });
     };
     $scope.renameTask = function () {
@@ -112,6 +130,9 @@ app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $ht
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
         });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
+        });
     };
 });
 
@@ -126,6 +147,9 @@ app.controller('ModalRenameTaskController', function ($scope, $uibModalInstance,
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
+        });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
         });
     }
 });
@@ -142,6 +166,9 @@ app.controller('ModalRenameCardController', function ($scope, $uibModalInstance,
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
         });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
+        });
     }
 });
 
@@ -154,6 +181,9 @@ app.controller('ModalDeleteCardController', function ($scope, $uibModalInstance,
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
+        });
+        promise.catch(function(response){
+            alert('Error. Backend returned: ' + response.data.message );
         });
     }
 });

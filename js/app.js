@@ -68,7 +68,7 @@ app.controller('cardController', function($scope, $http, $rootScope, $uibModal){
             var taskIds = _.map(event.models, function(task){
                 return task.id;
             });
-            var promise = $http.put(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/sort', taskIds);
+            var promise = $http.put(API_ROOT + 'card/' + $scope.card.id + '/sort', taskIds);
         }
     };
 });
@@ -86,7 +86,7 @@ app.controller('taskController', function($scope, $http, $rootScope, $uibModal){
         });
     };
     $scope.deleteTask = function () {
-        var promise = $http.delete(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task/' + $scope.task.id);
+        var promise = $http.delete(API_ROOT + 'task/' + $scope.task.id);
         promise.then(function(){
             $rootScope.$broadcast('boardUpdateEvent');
         });
@@ -107,7 +107,7 @@ app.controller('ModalAddTaskController', function($scope, $uibModalInstance, $ht
     $scope.submit = function() {
         var body = {};
         body.name = $scope.task.name;
-        var promise = $http.post(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task', body);
+        var promise = $http.post(API_ROOT + 'card/' + $scope.card.id + '/task', body);
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
@@ -122,7 +122,7 @@ app.controller('ModalRenameTaskController', function ($scope, $uibModalInstance,
     $scope.submit = function() {
         var body = {};
         body.name = $scope.task.newName;
-        var promise = $http.put(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id + '/task/' + $scope.task.id, body);
+        var promise = $http.put(API_ROOT + 'task/' + $scope.task.id, body);
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
@@ -137,7 +137,7 @@ app.controller('ModalRenameCardController', function ($scope, $uibModalInstance,
     $scope.submit = function() {
         var body = {};
         body.name = $scope.card.newName;
-        var promise = $http.put(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id, body);
+        var promise = $http.put(API_ROOT + 'card/' + $scope.card.id, body);
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');
@@ -150,7 +150,7 @@ app.controller('ModalDeleteCardController', function ($scope, $uibModalInstance,
         $uibModalInstance.dismiss('cancel');
     };
     $scope.deleteCard = function() {
-        var promise = $http.delete(API_ROOT + 'board/' + BOARD_HASH + '/card/' + $scope.card.id);
+        var promise = $http.delete(API_ROOT + 'card/' + $scope.card.id);
         promise.then(function(){
             $uibModalInstance.dismiss();
             $rootScope.$broadcast('boardUpdateEvent');

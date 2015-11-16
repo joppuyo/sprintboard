@@ -139,7 +139,7 @@ $app->group('/api', function(){
 
     });
     // Rename a card
-    $this->put('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    $this->put('/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
             $body = $req->getParsedBody();
             if (empty($body['name'])) {
@@ -154,7 +154,7 @@ $app->group('/api', function(){
         }
     });
     // Delete a card from a board
-    $this->delete('/board/{boardHash}/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    $this->delete('/card/{cardId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
             $card = \Sprintboard\Model\Card::where('id', $args['cardId'])->firstOrFail();
             $card->delete();
@@ -165,7 +165,7 @@ $app->group('/api', function(){
     });
     // Add new task to a card
     // Example of JSON payload: {"name": "My Example Task"}
-    $this->post('/board/{boardHash}/card/{cardId}/task', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    $this->post('/card/{cardId}/task', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         $body = $req->getParsedBody();
         $name = empty($body['name']) ? null : $body['name'];
         if (!$name) {
@@ -187,7 +187,7 @@ $app->group('/api', function(){
         }
     });
     // Mark a task to be done or unmark it
-    $this->map(['PUT', 'DELETE'], '/board/{boardHash}/card/{cardId}/task/{taskId}/done', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    $this->map(['PUT', 'DELETE'], '/task/{taskId}/done', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
             $task = \Sprintboard\Model\Task::findOrFail($args['taskId']);
             if ($req->isPut()) {
@@ -202,7 +202,7 @@ $app->group('/api', function(){
         }
     });
     // Delete a task
-    $this->delete('/board/{boardHash}/card/{cardId}/task/{taskId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    $this->delete('/task/{taskId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
             $task = \Sprintboard\Model\Task::findOrFail($args['taskId']);
             $task->delete();
@@ -212,7 +212,7 @@ $app->group('/api', function(){
         }
     });
     // Rename a task
-    $this->put('/board/{boardHash}/card/{cardId}/task/{taskId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+    $this->put('/task/{taskId}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
         $body = $req->getParsedBody();
         $name = empty($body['name']) ? null : $body['name'];
         if (!$name) {
@@ -227,7 +227,7 @@ $app->group('/api', function(){
             return $res->withJson(['error' => 'Task not found'], 404);
        }
     });
-    $this->put('/board/{boardHash}/card/{cardId}/sort', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+    $this->put('/card/{cardId}/sort', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
         $body = $req->getParsedBody();
         try {
             foreach ($body as $index => $taskId) {

@@ -121,9 +121,9 @@ $app->group('/api', function(){
     });
     // Add new card to a board
     // Example of JSON payload: {"name": "My Example Card"}
-    $this->post('/board/{boardHash}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
+    $this->post('/team/{teamHash}/{sprintId}/card', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
-            $board = \Sprintboard\Model\Sprint::where('hash', $args['boardHash'])->firstOrFail();
+            $sprint = \Sprintboard\Model\Sprint::findOrFail($args['sprintId']);
             $card = new \Sprintboard\Model\Card();
             $body = $req->getParsedBody();
             $name = empty($body['name']) ? null : $body['name'];
@@ -131,10 +131,10 @@ $app->group('/api', function(){
                 return $res->withJson(['message' => 'Missing name parameter'], 400);
             }
             $card->name = $name;
-            $board->cards()->save($card);
+            $sprint->cards()->save($card);
             return $res->withStatus(201);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return $res->withJson(['message' => 'Card not found'], 404);
+            return $res->withJson(['message' => 'Sprint not found'], 404);
         }
 
     });
@@ -238,6 +238,39 @@ $app->group('/api', function(){
             return $res->withStatus(204);
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return $res->withJson(['message' => 'Task not found'], 404);
+        }
+    });
+    $this->post('/team/{teamHash}/sprint', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
+        $body = $req->getParsedBody();
+        try {
+            $team = \Sprintboard\Model\Team::with([
+                'sprints' => function($query) {
+                    return $query->orderBy('start_datetime', 'desc');
+                },
+                'sprints.cards.tasks' => function($query) {
+                    return $query->where('is_done', false); // Load only those tasks that are not done
+                }]
+            )->where('hash', $args['teamHash'])->firstOrFail();
+            $sprint = new \Sprintboard\Model\Sprint();
+
+            // TODO: validate request data
+            $sprint->name = $body['name'];
+            $sprint->start_datetime = \Carbon\Carbon::parse($body['start_date'])->toDateTimeString();
+            $sprint->end_datetime = \Carbon\Carbon::parse($body['end_date'])->toDateTimeString();
+
+            $lastSprint = $team->sprints->first();
+
+            $team->sprints()->save($sprint);
+
+            foreach ($lastSprint->cards as $card) {
+                if($card->tasks->count()){
+                    $sprint->cards()->save($card);
+                }
+            }
+
+            return $res->withJson($sprint);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return $res->withJson(['message' => 'Team not found'], 404);
         }
     });
 });

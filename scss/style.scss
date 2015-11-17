@@ -188,3 +188,15 @@ $brand-primary: $color-red;
     font-weight: 500;
   }
 }
+
+.header-sprint-name-dropdown-wrapper {
+  height: 48px;
+  float: left;
+}
+
+.header-sprint-name-dropdown {
+  @include no-select;
+  height: 48px;
+  background-color: orange;
+  padding-right: 48px;
+}

@@ -4,7 +4,18 @@
 <body ng-app="sprintBoard">
 <div ng-controller="boardController">
     <div class="header">
-        <div class="header-board-name">{{team.name}} - {{sprint.name}}</div>
+        <div class="header-board-name">{{team.name}}</div>
+        <div class="header-sprint-name-dropdown-wrapper" uib-dropdown on-toggle="toggled(open)">
+        <div class="header-sprint-name-dropdown" uib-dropdown-toggle>{{sprint.name}}</div>
+        <ul class="uib-dropdown-menu">
+                <li ng-repeat="sprint in team.sprints">
+                    <a ng-href="team/{{team.hash}}/{{sprint.id}}">{{ sprint.name }}</a>
+                </li>
+                <li>
+                    <a href="" ng-click="addSprint()">Create new sprint</a>
+                </li>
+            </ul>
+            </div>
         <div class="header-card-add" ng-click="addCard()">
             <div class="header-card-add-icon"></div>
             <div class="header-card-add-text">Add new card</div>

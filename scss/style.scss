@@ -192,6 +192,7 @@ $brand-primary: $color-red;
 .header-sprint-name-dropdown-wrapper {
   height: 48px;
   float: left;
+  margin-left: 16px;
 }
 
 .header-sprint-name-dropdown {
@@ -199,4 +200,5 @@ $brand-primary: $color-red;
   height: 48px;
   background-color: orange;
   padding-right: 48px;
+  padding-left: 16px;
 }

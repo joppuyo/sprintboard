@@ -240,6 +240,7 @@ $app->group('/api', function(){
             return $res->withJson(['message' => 'Task not found'], 404);
         }
     });
+    // Add a new sprint. Copies the undone task from last sprint. Returns the new sprint object
     $this->post('/team/{teamHash}/sprint', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
         $body = $req->getParsedBody();
         try {
@@ -263,16 +264,14 @@ $app->group('/api', function(){
             $team->sprints()->save($sprint);
 
             foreach ($lastSprint->cards as $card) {
-                if($card->tasks->count()){
-                    $cardModel = new \Sprintboard\Model\Card();
-                    $cardModel->name = $card->name;
-                    $sprint->cards()->save($cardModel);
-                    foreach ($card->tasks as $task) {
-                        $taskModel = new \Sprintboard\Model\Task();
-                        $taskModel->name = $task->name;
-                        $taskModel->is_done = false;
-                        $cardModel->tasks()->save($taskModel);
-                    }
+                $cardModel = new \Sprintboard\Model\Card();
+                $cardModel->name = $card->name;
+                $sprint->cards()->save($cardModel);
+                foreach ($card->tasks as $task) {
+                    $taskModel = new \Sprintboard\Model\Task();
+                    $taskModel->name = $task->name;
+                    $taskModel->is_done = false;
+                    $cardModel->tasks()->save($taskModel);
                 }
             }
 

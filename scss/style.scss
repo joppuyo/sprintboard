@@ -193,12 +193,21 @@ $brand-primary: $color-red;
   height: 48px;
   float: left;
   margin-left: 16px;
+  &.open {
+    background-color: mix(black, $color-red, 10%);
+  }
 }
 
 .header-sprint-name-dropdown {
   @include no-select;
   height: 48px;
-  background-color: orange;
   padding-right: 48px;
   padding-left: 16px;
+  background: url("../images/icon-dropdown.svg");
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+  &:hover {
+    background-color: mix(black, $color-red, 10%);
+  }
 }

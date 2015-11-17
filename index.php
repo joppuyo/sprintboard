@@ -264,7 +264,15 @@ $app->group('/api', function(){
 
             foreach ($lastSprint->cards as $card) {
                 if($card->tasks->count()){
-                    $sprint->cards()->save($card);
+                    $cardModel = new \Sprintboard\Model\Card();
+                    $cardModel->name = $card->name;
+                    $sprint->cards()->save($cardModel);
+                    foreach ($card->tasks as $task) {
+                        $taskModel = new \Sprintboard\Model\Task();
+                        $taskModel->name = $task->name;
+                        $taskModel->is_done = false;
+                        $cardModel->tasks()->save($taskModel);
+                    }
                 }
             }
 

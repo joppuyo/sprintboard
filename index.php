@@ -1,6 +1,7 @@
 <?php
 require 'vendor/autoload.php';
 
+session_cache_limiter(false);
 session_start();
 
 $configuration = [
@@ -29,11 +30,18 @@ $capsule->addConnection([
 $capsule->bootEloquent();
 $capsule->setAsGlobal();
 $container = $app->getContainer();
+
 $container['generateHash'] = function (){
     $factory = new RandomLib\Factory;
     $generator = $factory->getMediumStrengthGenerator();
     return $generator->generateString(8, $generator::CHAR_LOWER);
 };
+
+$container['cache'] = function () {
+    return new \Slim\HttpCache\CacheProvider();
+};
+
+$app->add(new \Slim\HttpCache\Cache('public', 0));
 
 $container['view'] = function ($c) {
     $view = new \Slim\Views\Twig('templates');
@@ -58,9 +66,7 @@ $app->map(['GET', 'POST'], '/', function(\Slim\Http\Request $req, \Slim\Http\Res
 $app->get('/team/{teamHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args) {
     try {
         $team = \Sprintboard\Model\Team::where('hash', $args['teamHash'])->firstOrFail();
-        $date = new DateTime();
         $this->view->offsetSet('team', $team);
-        $this->view->offsetSet('start_date', $date->format('d.m.Y'));
         return $this->view->render($res, 'teamView.twig');
     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
         return $this->notFoundHandler($req, $res);
@@ -86,6 +92,10 @@ $app->group('/api', function(){
     // Get information about board
     $this->get('/team/{teamHash}', function(\Slim\Http\Request $req, \Slim\Http\Response $res, $args){
         try {
+            // TODO: when implemented in Slim-HttpCache, return response immediately See: https://github.com/slimphp/Slim-HttpCache/issues/10
+            $lastModified = \Sprintboard\Model\Team::where('hash', $args['teamHash'])->firstOrFail()->value('updated_at');
+            $res = $this->cache->withLastModified($res, \Carbon\Carbon::parse($lastModified)->timestamp);
+
             $team = \Sprintboard\Model\Team::with([
                 'sprints' => function($query) {
                     return $query->orderBy('start_datetime');

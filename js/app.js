@@ -1,6 +1,6 @@
 var app = angular.module('sprintBoard', ['ui.bootstrap', 'ng-sortable']);
 
-app.controller('boardController', function($scope, $http, $uibModal) {
+app.controller('boardController', function($scope, $http, $uibModal, $interval) {
 
     $scope.updateBoard = function(){
         var promise = $http.get(API_ROOT + 'team/' + TEAM_HASH);
@@ -14,6 +14,8 @@ app.controller('boardController', function($scope, $http, $uibModal) {
     };
 
     $scope.updateBoard();
+
+    $interval($scope.updateBoard,5000);
 
     $scope.$on('boardUpdateEvent', function() {
         $scope.updateBoard();

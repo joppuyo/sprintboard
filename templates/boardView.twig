@@ -8,7 +8,7 @@
         <div class="header-sprint-name-dropdown-wrapper" uib-dropdown on-toggle="toggled(open)">
         <div class="header-sprint-name-dropdown" uib-dropdown-toggle>{{sprint.name}}</div>
         <ul class="uib-dropdown-menu">
-                <li ng-repeat="sprint in team.sprints">
+                <li ng-repeat="sprint in team.sprints track by sprint.id">
                     <a ng-href="team/{{team.hash}}/{{sprint.id}}">{{ sprint.name }}</a>
                 </li>
                 <li>
@@ -22,7 +22,7 @@
         </div>
     </div>
     <div class="content">
-        <div class="card" ng-repeat="card in sprint.cards" ng-controller="cardController">
+        <div class="card" ng-repeat="card in sprint.cards track by card.id" ng-controller="cardController">
         <div class="card-title">{{ card.name }}</div>
 
         <div class="card-ellipsis-wrapper" uib-dropdown on-toggle="toggled(open)">
@@ -38,7 +38,7 @@
         </div>
 
         <div class="card-tasks-container" ng-sortable="sortConfig">
-            <div class="card-task clearfix" ng-class="{'card-task-is-done': task.is_done}" ng-repeat="task in card.tasks" ng-controller="taskController">
+            <div class="card-task clearfix" ng-class="{'card-task-is-done': task.is_done}" ng-repeat="task in card.tasks track by task.id" ng-controller="taskController">
                 <div class="card-task-checkmark" ng-click="markAsDone()"></div>
                 <div class="card-task-ellipsis-wrapper" uib-dropdown on-toggle="toggled(open)">
                 <div class="card-task-ellipsis" uib-dropdown-toggle></div>
